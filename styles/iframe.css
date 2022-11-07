@@ -1,0 +1,31 @@
+body {
+  margin: 1vw 5vh 5vw 5vh;
+  padding: 0;
+
+  height: 90vh;
+  width: 90vw;
+
+  font-family: "EB Garamond", serif;
+  word-wrap: break-word;
+  /* kolor tekstu ramki*/
+  background-color: #e0dbcd;
+  touch-action: manipulation;
+
+  position: relative;
+  border: none;
+}
+
+p {
+  line-height: 1.6;
+  text-align: justify;
+  font-size: 1.3em;
+  color: #333;
+}
+.iframe_text {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}

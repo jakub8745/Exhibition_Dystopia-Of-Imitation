@@ -1,0 +1,887 @@
+<!--
+
+  Thanks to every contributor of threejs project. 
+  please visit: 
+  https://threejs.org/
+  https://github.com/mrdoob/three.js/releases
+  https://tweenjs.github.io/tween.js/
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>The Dystopia of an Imitation by Jaroslaw Solecki in Blue Point Art Gallery</title>
+  <meta name="description" content="The Dystopia of an Imitation by Jaroslaw (Jarek) Solecki is a virtual
+        art installation created in WebGL (threejs) technology inspired by the paintings of
+        Johannes Vermeeer, in particular his famous The Milkmaid. The booklet " The Dystopia of an Imitation" and the
+    interactive gallery environment are integral elements of the installation. The project was awarded an Arts Council
+    England grant." />
+  <meta name="keywords"
+    content="web art 3D installation, the dystopia of an imitation, Johanes Vermeer, the milkmaid, art object, arts council england, Jaroslaw Solecki, conceptual, pitcher, threejs, interactive, webgl">
+  <meta property="og:title" content="The Dystopia of an Imitation by Jaroslaw Solecki">
+  <meta property="og:description" content="The Dystopia of an Imitation by Jaroslaw (Jarek) Solecki is a virtual
+        art installation created in WebGL (threejs) technology inspired by the paintings of
+        Johannes Vermeeer, in particular his famous The Milkmaid.">
+  <meta property="og:url" content="https://dystopiaofimitation.bluepointart.uk">
+  <meta property="og:type" content="website">
+  <meta property="og:image"
+    content="https://dystopiaofimitation.bluepointart.uk/textures/dystopiaOfImitation_downloadBook.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" name="viewport" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="styles/main.css" />
+
+</head>
+
+<body>
+
+  <section id="loading-screen">
+
+    <div id="nowyCounterDown" class="counterDown"></div>
+
+  </section>
+
+  <canvas id="c"></canvas>
+
+  <div class="button-container" id="button-container">
+    <div id="play" class="gizmo-button" display="block">
+      <a href="#"><img id="play-icon" src="/textures/icons/audioMuted.png"></a>
+    </div>
+
+
+    <div id="galleryLogoButton" class="gizmo-button" display="block">
+      <a href="#"><img id="gizmo-icon" src="/textures/icons/galleryLogoButton.png"></a>
+    </div>
+
+    <div id="infoButton" class="open-info-button" display="block">
+      <a href="#"><img id="info-icon" src="/textures/icons/info.png"></a>
+    </div>
+
+    <div id="pdfButton" class="gizmo-button" display="block">
+      <a href="#"><img id="info-icon" src="/textures/icons/downloadPDF.png"></a>
+    </div>
+
+
+    <div id="gizmoButton" class="gizmo-button" display="block">
+      <a href="#"><img id="gizmo-icon" src="/textures/icons/gizmo.png"></a>
+    </div>
+
+    <div id="reloadButton" class="gizmo-button" display="block" ontouchstart="window.location.reload(false)"
+      onclick="window.location.reload(false)">
+      <a href="#"><img id="reload-icon" src="/textures/icons/reload.png"></a>
+    </div>
+
+    <!--------------------------------------------------------------------------->
+    <div id="leftButton" class="arrow-button" display="none">
+      <a href="#"><img id="gizmo-icon" src="/textures/icons/leftButton.png"></a>
+    </div>
+    <div id="backwardButton" class="arrow-button" display="none">
+      <a href="#"><img id="gizmo-icon" src="/textures/icons/backwardButton.png"></a>
+    </div>
+    <div id="forwardButton" class="arrow-button" display="block">
+      <a href="#"><img id="gizmo-icon" src="/textures/icons/forwardButton.png"></a>
+    </div>
+    <div id="rightButton" class="arrow-button" display="block">
+      <a href="#"><img id="gizmo-icon" src="/textures/icons/rightButton.png"></a>
+    </div>
+    <!------------------------------------------------------------------------------>
+
+    <div class="exhibition-name">
+      <section>
+        <b>Jarosław Solecki <i>THE DYSTOPIA OF AN IMITATION</i><b /><br />
+      </section>
+    </div>
+    
+
+  </div>
+
+  <div id="widget" class="flex-container" style="display: none">
+
+    <a href="#" class="close-button" ontouchstart="closeButton()" onclick="closeButton()"></a>
+    <script>
+
+
+
+      const closeButton = () => {
+        document.getElementById('widget').style.display = 'none';
+      };
+    </script>
+   
+    <div class="flex-items">
+      <iframe src="project_info.html" frameborder="0" allowtransparency="true" title="info"></iframe>
+    </div>
+  </div>
+  </div>
+
+  <script type="text/javascript" src="/build/tween.js"></script>
+  <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+  <script type="importmap">
+			{
+				"imports": {
+					"three": "../build/three.module.js"
+				}
+			}
+		</script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from "./jsm/controls/OrbitControls.js"; //////////////////////
+    import { obrazyArray } from "/js/arrays.js";
+
+    import { TransformControls } from './jsm/controls/TransformControls.js';
+    const newPositon = new THREE.Vector3();
+    const pickPosition = new THREE.Vector2();
+    const distance = new THREE.Vector3();
+    const front_vector = new THREE.Vector3();
+    const ignore1 = new THREE.Vector3();
+    const ignore2 = new THREE.Vector3();
+    const bezruch = true
+    const d = 0.1;
+    const isTweenCompleted = true;
+    let x, INTERSECTED, INTERSECTED0;
+    let clickTimer = null;
+    let whatTouch = 0;
+
+    let control, orbit;
+    const targetStart = new THREE.Vector3();
+    const targetEnd = new THREE.Vector3();
+    const cameraStart = new THREE.Vector3();
+    const cameraEnd = new THREE.Vector3();
+
+    const mobileFirstTouch = true;
+
+
+    const getDeviceType = () => {
+      const ua = navigator.userAgent;
+      if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        return "tablet";
+      }
+      if (
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 0) ||
+        navigator.platform === "iPad"
+      ) {
+        return "tablet";
+      }
+      if (
+        /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+          ua
+        )
+      ) {
+        return "mobile";
+      }
+      return "desktop";
+    };
+
+    const deviceType = getDeviceType();
+    if (deviceType === 'mobile') {
+      document.getElementById('button-container').style.height = "80vh";
+    }
+
+    const counterDownTimer = () => {
+      // Set the date we're counting down to
+      var countDownDate = new Date("May 27, 2022 18:00:00").getTime();
+
+      // Update the count down every 1 second
+      var x = setInterval(function () {
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distanceCDT = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distanceCDT / (1000 * 60 * 60 * 24));
+        var hours = Math.floor(
+          (distanceCDT % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        var minutes = Math.floor((distanceCDT % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distanceCDT % (1000 * 60)) / 1000);
+
+        // Output the result in an element with id="demo"
+
+        //document.getElementById("nowyCounterDown").innerHTML = '<p><br>Przygotowujemy wystawę pt.: <b><i>Dialogi Vincenza — spojrzenia</i></b> <br>jest onaczęścią projektu:<i>Twórczość Stanisława Vincenza u progu XXI wieku— w ujęciu interdyscyplinarnym</i><br>Zapraszamy na wernisaż wystawy za:</p>' ""
+        document.getElementById("nowyCounterDown").innerHTML = '<p> <img class="logo" src="/textures/BluePointGallery.gif" alt="LogoBluePointArtGallery"   /><br><b><i> Jarek Solecki </i>THE DYSTOPIA OF AN IMITATION<b /><br> <a href="https://bluepointart.uk/">BLUE POINT ART GALLERY</a><br />Londyn 2022<br /><br/><b>Exhibition opens in: <br> ' + days + ' days ' + hours + " hours " + minutes + " minutes " + seconds + " seconds.";
+        // If the count down is over, write some text
+        if (distanceCDT < 0) {
+          clearInterval(x);
+          document.getElementById("nowyCounterDown").innerHTML = "Loading...";
+          document.getElementById("button-container").style.display = "inline-flex"
+          main();
+        }
+      }, 1000);
+    }
+    counterDownTimer()
+
+
+
+    function main() {
+      const canvas = document.querySelector("#c");
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      const raycaster = new THREE.Raycaster();
+      const scene = new THREE.Scene();
+      const cameraWorldDir = new THREE.Vector3();
+      const camera = new THREE.PerspectiveCamera(
+        60, // fov
+        2, // aspect
+        0.01, // near
+        70// far
+      );
+
+      scene.background = new THREE.Color(0xf0f0f0);
+      scene.add(camera);
+
+      renderer.setPixelRatio(window.devicePixelRatio);
+
+      renderer.shadowMap.enabled = true;
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.physicallyCorrectLights = true
+      renderer.toneMapping = THREE.CineonToneMapping
+
+
+      const openGestures = (iframeSrc, isNotWeb) => {
+        if (document.getElementsByTagName("iframe")[0].contentWindow !== undefined) {
+          document.getElementById("widget").style.display = "flex";
+          document.getElementsByTagName("iframe")[0].src = iframeSrc
+        }
+        if (isNotWeb) { counterDownTimer(); }
+
+
+        switch (deviceType) {
+          case "desktop":
+            break;
+          case "mobile":
+            break;
+          case 'tablet':
+            break;
+          default:
+            break;
+        }
+      };
+
+
+
+      /////////objcts - world///////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////////
+
+      {
+        const loadingManager = new THREE.LoadingManager(() => {
+          const loadingScreen = document.getElementById("loading-screen");
+          loadingScreen.classList.add("fade-out");
+          // optional: remove loader from DOM via event listener
+          loadingScreen.addEventListener("transitionend", onTransitionEnd);
+        });
+
+        const loadero = new THREE.ObjectLoader(loadingManager);
+
+        loadero.load("/Pitcher.json", function (objec) {
+          scene.copy(objec);
+          scene.children.forEach((element) => {
+            if (element.type === "Mesh") {
+              element.geometry.computeBoundingBox();
+            }
+          })
+
+          const dzban = scene.getObjectByName(`dzban`);
+
+          dzban.rotation.set(0, -90, 0)
+          dzban.receiveShadow = true
+          dzban.material.needsUpdate = true
+
+          control._gizmo.visible = false;
+          control.setMode("rotate");
+          control.attach(dzban);
+          scene.add(control);
+
+          const floor = scene.getObjectByName('Floor');
+          floor.material.receiveShadow = true
+          floor.material.map.wrapS = THREE.RepeatWrapping;
+          floor.material.map.wrapT = THREE.RepeatWrapping;
+          floor.material.map.repeat.set(60, 60);
+          floor.material.needsUpdate = true;
+        })
+      }
+      ////////////////////////////////////////
+      // CONTROLS
+
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      control = new TransformControls(camera, renderer.domElement);
+
+      switch (deviceType) {
+        case "desktop":
+          //openGestures();
+          controls.mouseButtons = {
+            RIGHT: THREE.MOUSE.PAN,
+            MIDDLE: THREE.MOUSE.DOLLY,
+            LEFT: THREE.MOUSE.ROTATE
+          };
+          controls.listenToKeyEvents(window);
+          controls.keyPanSpeed = 40;
+
+          controls.screenSpacePanning = false;
+          controls.minDistance = 0.1;
+          controls.maxDistance = 2.5;
+          controls.enablePan = true;
+          //controls.panSpeed = 5;
+          //controls.rotateSpeed = 0.2;
+          controls.enableZoom = true;
+          controls.zoomSpeed = 1;
+          //controls.minZoom = 1;
+          //controls.minZoom = 1;
+          controls.panSpeed = 4;
+          controls.rotateSpeed = 0.4;
+          break;
+        case "mobile":
+
+          controls.touches = {
+            ONE: THREE.TOUCH.ROTATE,
+            TWO: THREE.TOUCH.DOLLY_PAN
+          };
+          controls.screenSpacePanning = false;
+          controls.minDistance = 0;
+          controls.maxDistance = 2.5;
+          controls.panSpeed = 2;
+          controls.rotateSpeed = 1;
+          controls.enableZoom = true;
+          controls.zoomSpeed = 1.5;
+          break;
+        case "tablet":
+
+          controls.touches = {
+            ONE: THREE.TOUCH.ROTATE,
+            TWO: THREE.TOUCH.DOLLY_PAN
+          };
+          controls.screenSpacePanning = false;
+          controls.minDistance = 0;
+          controls.maxDistance = 2.5;
+          controls.panSpeed = 2;
+          controls.rotateSpeed = 1;
+          controls.enableZoom = true;
+          controls.zoomSpeed = 1.5;
+      }
+
+      controls.maxPolarAngle = Math.PI / 2; // Limit angle of visibility
+      controls.minPolarAngle = Math.PI / 2;
+      controls.target.copy(new THREE.Vector3(-19, 6, 2.5));
+      controls.object.position.copy(new THREE.Vector3(-21, 6, 2));
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.autoRotate = false;
+      controls.autoRotateSpeed = 0.02;
+
+      //////////////////// audio: PouringMilk
+
+
+      const dzwieki = () => {
+
+        const listener = new THREE.AudioListener();
+        camera.add(listener);
+        const sound = new THREE.PositionalAudio(listener);
+        const audioLoader = new THREE.AudioLoader();
+        audioLoader.load('sounds/Pouring_Milk_Sound_Effect.mp3', function (buffer) {
+          sound.name = "pouringMilk"
+          sound.setBuffer(buffer);
+          sound.setLoop(true);
+          sound.setRefDistance(.2);
+          sound.setVolume(25);
+
+          if (scene.getObjectByName(`dzban`)) {
+            scene.getObjectByName(`dzban`).add(sound);
+          }
+        })
+
+        //////////////////// audio: kitchen_sounds
+
+        const geometryDot = new THREE.SphereBufferGeometry(0.25, 0.25, 0.25); //0.5
+        const materialDot = new THREE.MeshBasicMaterial({
+          color: 0x010101,
+          wireframe: true
+        });
+        const dot = new THREE.Mesh(geometryDot, materialDot);
+        dot.position.set(-7.6, 7, 18);
+        dot.name = "dot"
+        dot.material.visible = false;
+        scene.add(dot)
+        const listenerOnPoint = new THREE.AudioListener();
+        camera.add(listenerOnPoint);
+        const soundOnPoint = new THREE.PositionalAudio(listenerOnPoint);
+        const audioLoaderOnPoint = new THREE.AudioLoader();
+        audioLoaderOnPoint.load('sounds/kitchen_sounds.mp3', function (buffer) {
+          soundOnPoint.name = "kitchenSounds"
+          soundOnPoint.setBuffer(buffer);
+          soundOnPoint.setLoop(true);
+          soundOnPoint.setRefDistance(.2);
+          soundOnPoint.setVolume(20);
+
+          if (scene.getObjectByName(`dot`)) {
+            scene.getObjectByName(`dot`).add(soundOnPoint);
+          }
+        });
+
+
+      }
+      /////////////////////////// if audio button 
+      //console.log(deviceType)
+      if (deviceType !== "mobile") {
+
+        dzwieki()
+      }
+
+      const soundOn = () => {
+        // console.log("hgvhjv")
+
+        if (scene.getObjectByName('pouringMilk') && scene.getObjectByName('kitchenSounds')) {
+          const onSoundPouring = scene.getObjectByName('pouringMilk')
+          const onSoundDot = scene.getObjectByName('kitchenSounds')
+          if (onSoundPouring.isPlaying) {
+            document.getElementById('play-icon').src = "/textures/icons/audioMuted.png";
+            onSoundPouring.pause();
+            onSoundDot.pause()
+
+          }
+          else {
+            onSoundPouring.play();
+            onSoundDot.play()
+            document.getElementById('play-icon').src = "/textures/icons/audioButton.png";
+
+          }
+        }
+
+      }
+
+
+      const handleMobilesoundOn = (evt) => {
+
+        // if (mobileFirstTouch) {
+        evt.preventDefault();
+        //   alert("cedsvsd")
+        document.getElementById("play").removeEventListener("touchstart", handleMobilesoundOn);
+        //const mobileFirstTouch = false
+
+        document.getElementById("play").addEventListener("touchstart", (evt) => { evt.preventDefault(); soundOn() });
+        dzwieki();
+
+
+        //}
+
+      }
+      document.getElementById("play").addEventListener("touchstart", handleMobilesoundOn);
+
+
+      ////////////////////  Camera Bouncing Sphere
+      const geometry = new THREE.SphereBufferGeometry(0.25, 8, 8); //0.5
+      const material = new THREE.MeshBasicMaterial({
+        color: 0x010101,
+        wireframe: true
+      });
+      const plane = new THREE.Mesh(geometry, material);
+      plane.rotation.x = Math.PI / 2;
+      plane.position.copy(camera.position);
+      plane.material.visible = false;
+      plane.name = "BouncingSphere";
+      plane.geometry.computeBoundingSphere();
+      scene.add(plane);
+
+      /////////////////// Target Bouncing Sphere
+
+      const Tgeometry = new THREE.SphereBufferGeometry(0.21, 8, 8); //0.21
+      const Tmaterial = new THREE.MeshBasicMaterial({
+        color: 0x011000,
+        wireframe: true
+      });
+      const Tplane = new THREE.Mesh(Tgeometry, Tmaterial);
+      Tplane.rotation.x = Math.PI / 2;
+      Tplane.position.copy(controls.target);
+      Tplane.material.visible = false;
+      Tplane.name = "TargetBouncingSphere";
+      Tplane.geometry.computeBoundingSphere();
+      scene.add(Tplane);
+      /////////////////////////////////////
+
+      const setPickPosition = (event) => {
+        let pos = getCanvasRelativePosition(event);
+        pickPosition.x = (pos.x / renderer.domElement.clientWidth) * 2 - 1;
+        pickPosition.y = (pos.y / renderer.domElement.clientHeight) * -2 + 1; // note we flip Y
+
+        touchStart();
+      };
+
+      const clearPickPosition = () => {
+        pickPosition.x = -100000;
+        pickPosition.y = -100000;
+      };
+
+      // event listeners
+
+      ////////////// audio button 
+      //document.getElementById("play").addEventListener("touchstart", soundOn);
+      document.getElementById("play").addEventListener("click", (evt) => { evt.preventDefault(); soundOn() });
+
+    
+      document
+        .getElementById("infoButton")
+        .addEventListener("pointerdown", function () {
+          evt.preventDefault();
+          openGestures("project_info.html", false)
+
+        });
+      document
+        .getElementById("infoButton")
+        .addEventListener("touchstart", function () {
+          evt.preventDefault();
+          openGestures("project_info.html", false)
+
+        });
+
+      document.getElementById("gizmoButton").addEventListener("pointerdown", function (evt) { evt.preventDefault(); control._gizmo.visible = !control._gizmo.visible })
+      document.getElementById("galleryLogoButton").addEventListener("pointerdown", function () { evt.preventDefault(); window.location.assign('https://bluepointart.uk/the-dystopia-of-an-imitation'); })
+      document.getElementById("pdfButton").addEventListener("pointerdown", function () { evt.preventDefault(); window.open('https://zenodo.org/record/6633680/files/Dystopia-of-an-Imitation-%20Solecki-Gorzkowicz%20%28ed%29.pdf?download=1', '_blank'); })
+
+      window.addEventListener("click", setPickPosition);
+      window.addEventListener("mouseout", clearPickPosition);
+      window.addEventListener("mouseleave", clearPickPosition);
+      window.addEventListener(
+        "touchstart",
+        (event) => {
+          event.preventDefault();
+          setPickPosition(event.touches[0]);
+        },
+        { passive: false }
+      );
+
+      window.addEventListener("touchmove", (event) => {
+        setPickPosition(event.touches[0]);
+      });
+
+      window.addEventListener("touchend", clearPickPosition);
+
+      controls.addEventListener("end", function () {
+        if (
+          document.getElementById("widget").style.display !== "none" &&
+          isTweenCompleted === true
+        ) {
+          window.TimeoutID = setTimeout(() => {
+            document.getElementById("widget").style.display = "none";
+          }, 1000);
+        }
+      });
+
+
+      ////////////
+
+      control.addEventListener("dragging-changed", function (event) {
+        controls.enabled = !event.value;
+      });
+      ///////
+
+      window.addEventListener("keydown", function (event) {
+        switch (event.keyCode) {
+          case 77: // M -- move
+            control.setMode("translate");
+            break;
+
+          case 82: // R --- rotatemrr
+            control.setMode("rotate");
+            break;
+
+          case 88: // X
+            control.showX = !control.showX;
+            break;
+
+          case 89: // Y
+            control.showY = !control.showY;
+            break;
+
+          case 90: // Z
+            control.showZ = !control.showZ;
+            break;
+
+          case 32: // Spacebar
+            //control.enabled = !control.enabled;
+            control._gizmo.visible = !control._gizmo.visible
+            break;
+
+          case 27: // Esc
+            control.reset();
+            break;
+        }
+      });
+
+
+      ///////
+
+      // cheking double tap
+      const touchStart = () => {
+        if (deviceType === "mobile" || deviceType === "tablet") {
+          return null;
+        }
+
+
+
+        if (clickTimer == null) {
+          ///////////////////////////// now it is cheking for double click:
+          clickTimer = setTimeout(function () {
+            clickTimer = null;
+            whatTouch = 1;
+          }, 500);
+        } else {
+          clearTimeout(clickTimer);
+          clickTimer = null;
+          whatTouch = 2;
+        }
+      };
+      const callback = () => {
+       // console.log("camera.position", camera.position)
+      }
+
+
+      //////////////////////////////////////////////////////////////////////////////////
+
+
+      const makeInfoDOM = (artObject) => {
+       //console.log("artObject.userData", artObject.userData)
+        if (artObject.userData.distanceToObject === undefined) {
+          return false;
+        }
+
+
+
+        const artObjectWorldDirection = new THREE.Vector3();
+        artObject.getWorldDirection(artObjectWorldDirection);
+        artObjectWorldDirection.round()
+
+        TWEEN.removeAll();
+
+        targetStart.copy(controls.target);
+        targetEnd.copy(artObject.position);
+        targetEnd.y = controls.target.y;
+
+        cameraStart.copy(camera.position);
+        cameraEnd.copy(artObject.position);
+        cameraEnd.y = camera.position.y;
+
+        distance.set(artObject.userData.distanceToObject, 0, artObject.userData.distanceToObject);
+        cameraEnd.add(artObjectWorldDirection.multiply(distance));
+        distance.set(artObject.userData.targetToObject, 0, artObject.userData.targetToObject);
+        targetEnd.add(artObjectWorldDirection.multiply(distance));
+
+        const tweenTarget = new TWEEN.Tween(targetStart).to(targetEnd, 2000).easing(TWEEN.Easing.Quadratic.Out);
+        tweenTarget.onUpdate(function () {
+          controls.target.copy(targetStart);
+          const isTweenCompleted = false;
+        });
+        tweenTarget.start();
+
+        const tweenCamera = new TWEEN.Tween(cameraStart).to(cameraEnd, 2000).easing(TWEEN.Easing.Quadratic.Out);
+        tweenCamera.onUpdate(function () {
+          camera.position.x = cameraStart.x;
+          camera.position.z = cameraStart.z;
+        });
+        tweenCamera.start();
+
+        return true;
+      };
+
+      const makeFeedback = (paintName) => { };
+      const getCanvasRelativePosition = (event) => {
+        const rect = renderer.domElement.getBoundingClientRect();
+        return {
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top
+        };
+      };
+      {
+        //////////   RENDEROWANIE
+      }
+
+      function onWindowResize() {
+        if (resizeRendererToDisplaySize(renderer)) {
+          clearPickPosition();
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+        }
+      }
+
+      const resizeRendererToDisplaySize = (renderer) => {
+        const canvas = renderer.domElement;
+        const pixelRatio = window.devicePixelRatio;
+        const width = (canvas.clientWidth * pixelRatio) | 0; // przelicznie służy tylko do sprawdzenia czy size się zmienił.
+        const height = (canvas.clientHeight * pixelRatio) | 0;
+        const needResize = canvas.width !== width || canvas.height !== height;
+        if (needResize) {
+          renderer.setSize(canvas.clientWidth, canvas.clientHeight, false); // było: renderer.setSize(width, height, false);
+          renderer.setPixelRatio(pixelRatio); // DODANE!!!!
+          clearPickPosition();
+        }
+        return needResize;
+      };
+
+      const render = () => {
+        if (resizeRendererToDisplaySize(renderer)) {
+          clearPickPosition();
+          const canvas = renderer.domElement;
+          camera.aspect = canvas.clientWidth / canvas.clientHeight;
+          camera.updateProjectionMatrix();
+
+        }
+        ///////////////////////////////////////
+
+        if (clickTimer == null) {
+          //
+        }
+
+        if (scene.children !== undefined) {
+          let object1 = scene.getObjectByName("BouncingSphere");
+          object1.position.copy(controls.object.position);
+          //object1.position.y = 0.1;
+
+          let object3 = scene.getObjectByName("TargetBouncingSphere");
+          object3.position.copy(controls.target);
+
+          scene.children.forEach((mesh) => {
+
+            if (
+              mesh.type === "Mesh" &&
+              mesh.name != "BouncingSphere" &&
+              mesh.name != "Floor" &&
+
+              //mesh.name != "Sill" &&
+              mesh.name != "Sill" &&
+              mesh.name != "TargetBouncingSphere"
+            ) {
+              if (mesh.geometry.boundingBox) {
+                let isCollision = detectCollisionCubes(object1, mesh);
+                if (isCollision) {
+                  controls.target.copy(controls.target0);
+                  camera.position.copy(controls.position0);
+                }
+
+                isCollision = detectCollisionCubes(object3, mesh);
+                if (isCollision) {
+                  TWEEN.removeAll()
+                  controls.target.copy(controls.target0);
+                  camera.position.copy(controls.position0);
+                }
+              }
+            }
+          });
+        }
+        controls.saveState();
+        //});
+
+        ///////////////////////////////// CLICK & collision & info
+        const obj = scene.children.find((obj) => obj.name == "BouncingSphere");
+        newPositon.copy(controls.target);
+        newPositon.y = 0.5;
+        obj.position.copy(newPositon);
+
+        raycaster.setFromCamera(pickPosition, camera);
+        const intersects = raycaster.intersectObjects(scene.children);
+        if (intersects.length > 0) {
+          if (INTERSECTED != intersects[0].object) {
+            INTERSECTED = intersects[0].object;
+
+            switch (INTERSECTED.name) {
+              case "TargetBouncingSphere":
+                INTERSECTED = INTERSECTED0;
+
+                break;
+              default:
+                INTERSECTED0 = INTERSECTED;
+            }
+
+            if (
+              INTERSECTED.name != "BouncingSphere" &&
+              INTERSECTED.name != "TargetBouncingSphere" &&
+              INTERSECTED.name != "Sill" &&
+              INTERSECTED.name != "Floor" &&
+              INTERSECTED.name != "Wall" &&
+              INTERSECTED.name != "DirectionalLight"
+            ) {
+              if (INTERSECTED.children[0]) {
+                //console.log('INTERSECTED.children[0]', INTERSECTED.children[0].name);
+              }
+              clickFeedback(INTERSECTED);
+
+              switch (whatTouch) {
+                case 1:
+
+                  //
+                  break;
+                case 2:
+
+                  makeInfoDOM(INTERSECTED);
+                  document.getElementById('widget').style.display = "none";
+
+
+                  break;
+                default:
+                  INTERSECTED = null;
+              }
+            }
+          }
+        }
+
+        whatTouch = 0;
+        INTERSECTED = null;
+        window.clearTimeout(window.timeoutID);
+        clearPickPosition();
+        controls.update();
+        TWEEN.update();
+
+        if (scene.children.length >= 1) {
+          renderer.render(scene, camera);
+        }
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+        requestAnimationFrame(render);
+      };
+
+      requestAnimationFrame(render);
+    }
+    {
+      //////////////////////  KONIEC MAIN()
+    }
+
+    function detectCollisionCubes(object1, object2) {
+      object1.updateMatrixWorld();
+      object2.updateMatrixWorld();
+
+      let box1 = object1.geometry.boundingSphere.clone();
+      box1.applyMatrix4(object1.matrixWorld);
+
+      let box2 = object2.geometry.boundingBox.clone();
+      box2.applyMatrix4(object2.matrixWorld);
+      return box1.intersectsBox(box2);
+    }
+
+    function onTransitionEnd(event) {
+      const element = event.target;
+      element.remove();
+    }
+
+    const clickFeedback = (intersectedObject) => {
+      if (intersectedObject.children[0]) {
+
+        /////////////// change colour for intersectedObject
+
+        intersectedObject.material.color.addScalar(0.4);
+        const func = () => {
+          intersectedObject.material.color.setRGB(1, 1, 1);
+        };
+        setTimeout(func, 100);
+      }
+    };
+  </script>
+</body>
+
+</html>
