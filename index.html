@@ -456,12 +456,12 @@
       }
 
 
-      const handleMobilesoundOn = (evt) => {
+      const handleMobilesoundOn = () => {
 
         // if (mobileFirstTouch) {
-        evt.preventDefault();
+        //evt.preventDefault();
         //   alert("cedsvsd")
-        document.getElementById("play").removeEventListener("touchstart", handleMobilesoundOn);
+        document.getElementById("play").removeEventListener("touchstart", (evt) => { evt.preventDefault(); handleMobilesoundOn() });
         //const mobileFirstTouch = false
 
         document.getElementById("play").addEventListener("touchstart", (evt) => { evt.preventDefault(); soundOn() });
@@ -471,8 +471,7 @@
         //}
 
       }
-      document.getElementById("play").addEventListener("touchstart", handleMobilesoundOn);
-
+     
 
       ////////////////////  Camera Bouncing Sphere
       const geometry = new THREE.SphereBufferGeometry(0.25, 8, 8); //0.5
@@ -520,8 +519,8 @@
       // event listeners
 
       ////////////// audio button 
-      //document.getElementById("play").addEventListener("touchstart", soundOn);
-      document.getElementById("play").addEventListener("pointerdown", (evt) => { evt.preventDefault(); soundOn() });
+      document.getElementById("play").addEventListener("touchstart", (evt) => { evt.preventDefault(); handleMobilesoundOn() });
+      document.getElementById("play").addEventListener("click", (evt) => { evt.preventDefault(); soundOn() });
 
     
       document
