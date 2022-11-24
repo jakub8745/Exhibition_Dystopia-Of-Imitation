@@ -521,7 +521,7 @@
 
       ////////////// audio button 
       //document.getElementById("play").addEventListener("touchstart", soundOn);
-      document.getElementById("play").addEventListener("click", (evt) => { evt.preventDefault(); soundOn() });
+      document.getElementById("play").addEventListener("pointerdown", (evt) => { evt.preventDefault(); soundOn() });
 
     
       document
