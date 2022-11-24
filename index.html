@@ -456,12 +456,12 @@
       }
 
 
-      const handleMobilesoundOn = () => {
+      const handleMobilesoundOn = (evt) => {
 
         // if (mobileFirstTouch) {
-        //evt.preventDefault();
+        evt.preventDefault();
         //   alert("cedsvsd")
-        document.getElementById("play").removeEventListener("touchstart", (evt) => { evt.preventDefault(); handleMobilesoundOn() });
+        document.getElementById("play").removeEventListener("touchstart", handleMobilesoundOn);
         //const mobileFirstTouch = false
 
         document.getElementById("play").addEventListener("touchstart", (evt) => { evt.preventDefault(); soundOn() });
@@ -519,7 +519,7 @@
       // event listeners
 
       ////////////// audio button 
-      document.getElementById("play").addEventListener("touchstart", (evt) => { evt.preventDefault(); handleMobilesoundOn() });
+      document.getElementById("play").addEventListener("touchstart", handleMobilesoundOn);
       document.getElementById("play").addEventListener("click", (evt) => { evt.preventDefault(); soundOn() });
 
     
