@@ -526,22 +526,22 @@
     
       document
         .getElementById("infoButton")
-        .addEventListener("pointerdown", function () {
+        .addEventListener("pointerdown", (evt) => {
           evt.preventDefault();
           openGestures("project_info.html", false)
 
         });
       document
         .getElementById("infoButton")
-        .addEventListener("touchstart", function () {
+        .addEventListener("touchstart", (evt) => {
           evt.preventDefault();
           openGestures("project_info.html", false)
 
         });
 
-      document.getElementById("gizmoButton").addEventListener("pointerdown", function (evt) { evt.preventDefault(); control._gizmo.visible = !control._gizmo.visible })
-      document.getElementById("galleryLogoButton").addEventListener("pointerdown", function () { evt.preventDefault(); window.location.assign('https://bluepointart.uk/the-dystopia-of-an-imitation'); })
-      document.getElementById("pdfButton").addEventListener("pointerdown", function () { evt.preventDefault(); window.open('https://zenodo.org/record/6633680/files/Dystopia-of-an-Imitation-%20Solecki-Gorzkowicz%20%28ed%29.pdf?download=1', '_blank'); })
+      document.getElementById("gizmoButton").addEventListener("pointerdown", (evt) => { evt.preventDefault(); control._gizmo.visible = !control._gizmo.visible })
+      document.getElementById("galleryLogoButton").addEventListener("pointerdown", (evt) => { evt.preventDefault(); window.location.assign('https://bluepointart.uk/the-dystopia-of-an-imitation'); })
+      document.getElementById("pdfButton").addEventListener("pointerdown", (evt) => { evt.preventDefault(); window.open('https://zenodo.org/record/6633680/files/Dystopia-of-an-Imitation-%20Solecki-Gorzkowicz%20%28ed%29.pdf?download=1', '_blank'); })
 
       window.addEventListener("click", setPickPosition);
       window.addEventListener("mouseout", clearPickPosition);
