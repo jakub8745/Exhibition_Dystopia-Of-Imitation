@@ -555,7 +555,10 @@
       document.getElementById("gizmoButton").addEventListener("pointerdown", (evt) => { evt.preventDefault(); control._gizmo.visible = !control._gizmo.visible })
       document.getElementById("galleryLogoButton").addEventListener("pointerdown", (evt) => { evt.preventDefault(); window.location.assign('https://bluepointart.uk/the-dystopia-of-an-imitation'); })
       document.getElementById("pdfButton").addEventListener("pointerdown", (evt) => { evt.preventDefault(); window.open('https://zenodo.org/record/6633680/files/Dystopia-of-an-Imitation-%20Solecki-Gorzkowicz%20%28ed%29.pdf?download=1', '_blank'); })
+document.getElementById("openseaButton").addEventListener("pointerdown", function (evt) { evt.preventDefault(); window.open('https://opensea.io/collection/dystopiaofimitation', '_blank'); })
+      document.getElementById("cryptoVoxelsButton").addEventListener("pointerdown", function (evt) { evt.preventDefault(); window.open('https://www.voxels.com/play?coords=E@1807W,979S', '_blank'); })
 
+	    
       window.addEventListener("click", setPickPosition);
       window.addEventListener("mouseout", clearPickPosition);
       window.addEventListener("mouseleave", clearPickPosition);
