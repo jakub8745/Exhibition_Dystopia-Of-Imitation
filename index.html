@@ -221,6 +221,17 @@
 
 
     function main() {
+	    
+	 if (window.location !== window.parent.location) {
+       
+        console.log("jest iframe")
+        document.getElementById("button-container").style.display = "none"
+
+      } else {
+        console.log("nie jest iframe")
+
+      }    
+	    
       const canvas = document.querySelector("#c");
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
       const raycaster = new THREE.Raycaster();
