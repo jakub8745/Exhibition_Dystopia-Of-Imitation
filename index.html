@@ -223,13 +223,9 @@
     function main() {
 	    
 	 if (window.location !== window.parent.location) {
-       
-        console.log("jest iframe")
-        document.getElementById("button-container").style.display = "none"
-
+		document.getElementById("button-container").style.display = "none"
       } else {
-        console.log("nie jest iframe")
-
+//
       }    
 	    
       const canvas = document.querySelector("#c");
