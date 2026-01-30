@@ -228,16 +228,11 @@ import { obrazyArray } from "./arrays.js";
         const modal = document.getElementById("movement-modal");
         if (!modal) return;
         const closeButton = modal.querySelector(".modal-close");
-        const storageKey = "movementHelpSeen";
 
         const hide = () => {
           modal.classList.remove("is-visible");
           modal.setAttribute("aria-hidden", "true");
-          try {
-            localStorage.setItem(storageKey, "1");
-          } catch (err) {
-            // ignore storage errors
-          }
+          // no-op
         };
 
         const show = () => {
@@ -245,17 +240,7 @@ import { obrazyArray } from "./arrays.js";
           modal.setAttribute("aria-hidden", "false");
         };
 
-        const seen = (() => {
-          try {
-            return localStorage.getItem(storageKey) === "1";
-          } catch (err) {
-            return false;
-          }
-        })();
-
-        if (!seen) {
-          show();
-        }
+        show();
 
         closeButton?.addEventListener("click", (evt) => {
           evt.preventDefault();
